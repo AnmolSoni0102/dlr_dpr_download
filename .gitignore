@@ -1,0 +1,4 @@
+# ignores all .md files
+.md
+
+node_modules
