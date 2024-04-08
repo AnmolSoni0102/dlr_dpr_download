@@ -1,37 +1,13 @@
-const User = require("../models/User");
+//const User = require("../models/User");
 const excelJS = require("exceljs");
-const db = require('../db/db');
-
+//const db = require('../db/db');
+const getDPRDetailsHelper = require('../helpers/dprHelper')
 
 const downloadDPR = async (req, res) => {
-    //console.log(db.getConnection());
     const { id } = req.params;
     console.log(id)
-    const con = db.getConnection();
     try {
-        const dprGeneral = await con.execute(`select us.f_name as customer_name, dp.service_contract, dp.reporting_date, lbc.name as contractor_name, 
-        CONCAT(lbc.prefix_u_id, '-', lbc.id) AS contactor_id, ccr.booking_id
-        from dpr as dp 
-        INNER JOIN 
-        users as us ON us.id=dp.user_id 
-        INNER JOIN 
-        labour_contractor as lbc on dp.contractor_id=lbc.id 
-        INNER JOIN 
-        crm_company_request as ccr on ccr.id=dp.order_id 
-        where dp.id= ?`, [id]);
-
-        console.log(dprGeneral[0][0])
-        const generalDetails = dprGeneral[0][0];
-
-        const dpr_table_details = await con.execute(`select dpd.dpr_item, dpd.work, dpd.unit, dpd.qty, dpd.total_deduction, dpd.total_qty
-        from dpr as dp 
-        INNER JOIN 
-        dpr_details as dpd on dp.id=dpd.dpr_id 
-        where dp.id=?`, [id]);
-
-        console.log(dpr_table_details[0])
-
-
+        const {dprGeneral: generalDetails, dpr_table_details} = await getDPRDetailsHelper(id);
         const workbook = new excelJS.Workbook();
         const sheet = workbook.addWorksheet("dpr");
 
@@ -57,7 +33,7 @@ const downloadDPR = async (req, res) => {
             { key: 'Total Qty.', width: 15 }
         ]
 
-        dpr_table_details[0].forEach(function (item, index) {
+        dpr_table_details.forEach(function (item, index) {
             sheet.addRow([generalDetails["reporting_date"], item.dpr_item, item.work, item.unit, item.qty, item.total_deduction, item.total_qty])
         });
 
@@ -65,15 +41,15 @@ const downloadDPR = async (req, res) => {
         const headerRow2 = sheet.addRow([, , , , , "Total Qty.", "Total Deduction", "Grand Total Qty."], { font: { bold: true } });
         headerRow2.font = { family: 4, size: 12, bold: true, width: 32 };
 
-        const total_qty = dpr_table_details[0].reduce((acc, el) => {
+        const total_qty = dpr_table_details.reduce((acc, el) => {
             acc += (!isNaN(el.qty) && el.qty) ? el.qty : 0
             return acc;
         }, 0);
-        const total_deduction = dpr_table_details[0].reduce((acc, el) => {
+        const total_deduction = dpr_table_details.reduce((acc, el) => {
             acc += (!isNaN(el.total_deduction) && el.total_deduction) ? el.total_deduction : 0
             return acc;
         }, 0)
-        const grand_total_qty = dpr_table_details[0].reduce((acc, el) => {
+        const grand_total_qty = dpr_table_details.reduce((acc, el) => {
             acc += (!isNaN(el.total_qty) && el.total_qty) ? el.total_qty : 0
             return acc;
         }, 0)
@@ -89,4 +65,16 @@ const downloadDPR = async (req, res) => {
         console.log(ex)
     }
 };
-module.exports = downloadDPR;
+
+const getDPRDetails = async (req, res) => {
+    const { id } = req.params;
+    console.log(id)
+    try {
+        const {dprGeneral: generalDetails, dpr_table_details} = await getDPRDetailsHelper(id);
+        res.json({generalDetails, dpr_table_details})
+    } catch(ex) {
+        console.log(ex)
+    }
+}
+
+module.exports = {downloadDPR, getDPRDetails};
