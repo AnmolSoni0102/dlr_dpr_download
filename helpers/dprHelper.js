@@ -4,7 +4,7 @@ const getDPRDetailsHelper = async (id) => {
     console.log(id)
     const con = db.getConnection();
     try {
-        const dprGeneral = await con.execute(`select us.f_name as customer_name, dp.service_contract, dp.reporting_date, lbc.name as contractor_name, 
+        const dprGeneral = await con.query(`select us.f_name as customer_name, dp.service_contract, dp.reporting_date, lbc.name as contractor_name, 
         CONCAT(lbc.prefix_u_id, '-', lbc.id) AS contactor_id, ccr.booking_id
         from dpr as dp 
         INNER JOIN 
@@ -18,7 +18,7 @@ const getDPRDetailsHelper = async (id) => {
         console.log(dprGeneral[0][0])
         const generalDetails = dprGeneral[0][0];
 
-        const dpr_table_details = await con.execute(`select dpd.dpr_item, dpd.work, dpd.unit, dpd.qty, dpd.total_deduction, dpd.total_qty
+        const dpr_table_details = await con.query(`select dpd.dpr_item, dpd.work, dpd.unit, dpd.qty, dpd.total_deduction, dpd.total_qty
         from dpr as dp 
         INNER JOIN 
         dpr_details as dpd on dp.id=dpd.dpr_id 
