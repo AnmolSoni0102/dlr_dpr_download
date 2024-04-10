@@ -15,7 +15,7 @@ const getDPRDetailsHelper = async (id) => {
         crm_company_request as ccr on ccr.id=dp.order_id 
         where dp.id= ?`, [id]);
 
-        console.log(dprGeneral[0][0])
+        console.log(dprGeneral)
         const generalDetails = dprGeneral[0][0];
 
         const dpr_table_details = await con.query(`select dpd.dpr_item, dpd.work, dpd.unit, dpd.qty, dpd.total_deduction, dpd.total_qty
