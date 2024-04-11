@@ -20,19 +20,15 @@ const createConnection = {
                 dbConnectionInfo
             );
 
-            dbconnection.on('connection', function (connection) {
-                console.log('DB Connection established');
+            dbconnection.getConnection((err,connection)=> {
+                if(err)
+                throw err;
+                console.log('Database connected successfully');
+                connection.release();
+              });
 
-                connection.on('error', function (err) {
-                    console.error(new Date(), 'MySQL error', err.code);
-                });
-                connection.on('close', function (err) {
-                    console.error(new Date(), 'MySQL close', err);
-                });
-
-            });
             this.connection = dbconnection;
-            console.log("sql connection established!!")
+            //console.log("sql connection established!!")
         } catch (ex) {
             console.log("SQL connection couldn't be established!! ", ex);
         }
