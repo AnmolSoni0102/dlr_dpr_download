@@ -70,8 +70,8 @@ const getDLRByContractorDetails = async (req, res) => {
     const { id } = req.params;
     console.log(id)
     try {
-        const {dprGeneral: generalDetails, dlr_table_details, attendance_details, category_count} = await getbycontractorDetailsHelper(id);
-        res.json({generalDetails, dlr_table_details, attendance_details, category_count})
+        const {generalDetails, dlr_table_details, attendance_details, category_count} = await getbycontractorDetailsHelper(id);
+        res.json({generalDetails, dlr_table_details, attendance_details, category_count});
     } catch(ex) {
         console.log(ex)
     }
@@ -141,6 +141,7 @@ const getDLRByCustomerDetails = async (req, res) => {
     console.log(id)
     try {
         const { generalDetails, dlr_table_details } = await getbyCustomerDetailsHelper(id);
+        console.log(`generalDetails `, generalDetails)
         res.json({generalDetails, dlr_table_details })
     } catch(ex) {
         console.log(ex)
