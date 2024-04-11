@@ -8,6 +8,7 @@ const downloadDPR = async (req, res) => {
     console.log(id)
     try {
         const {dprGeneral: generalDetails, dpr_table_details} = await getDPRDetailsHelper(id);
+        console.log("generalDetails", dpr_table_details);
         const workbook = new excelJS.Workbook();
         const sheet = workbook.addWorksheet("dpr");
 

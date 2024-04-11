@@ -1,5 +1,6 @@
-const mysql = require('mysql2/promise')
+const mysql = require('mysql')
 const nodemailer = require("nodemailer");
+const util = require('util');
 
 const connection = null;
 const createConnection = {
@@ -26,8 +27,10 @@ const createConnection = {
                 console.log('Database connected successfully');
                 connection.release();
               });
+            
+            const query = util.promisify(dbconnection.query).bind(dbconnection);
 
-            this.connection = dbconnection;
+            this.connection = query;
             //console.log("sql connection established!!")
         } catch (ex) {
             console.log("SQL connection couldn't be established!! ", ex);
