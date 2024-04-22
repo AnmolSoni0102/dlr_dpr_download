@@ -4,7 +4,7 @@ const getDPRDetailsHelper = async (id) => {
     console.log(id)
     const con = db.getConnection();
     try {
-        const dprGeneral = await con.execute(`select us.f_name as customer_name, dp.service_contract, dp.reporting_date, lbc.name as contractor_name, 
+        const dprGeneral2 = await con.execute(`select us.f_name as customer_name, dp.service_contract, dp.reporting_date, lbc.name as contractor_name, 
         CONCAT(lbc.prefix_u_id, '-', lbc.id) AS contactor_id, ccr.booking_id
         from dpr as dp 
         INNER JOIN 
@@ -15,8 +15,8 @@ const getDPRDetailsHelper = async (id) => {
         crm_company_request as ccr on ccr.id=dp.order_id 
         where dp.id= ?`, [id]);
 
-        console.log(dprGeneral[0][0])
-        const generalDetails = dprGeneral[0][0];
+        console.log(dprGeneral2[0][0])
+        const generalDetails = dprGeneral2[0][0];
 
         const dpr_table_details = await con.execute(`select dpd.dpr_item, dpd.work, dpd.unit, dpd.qty, dpd.total_deduction, dpd.total_qty
         from dpr as dp 
@@ -26,7 +26,7 @@ const getDPRDetailsHelper = async (id) => {
 
         console.log(dpr_table_details[0]);
 
-        return {dprGeneral: dprGeneral[0][0], dpr_table_details: dpr_table_details[0]}
+        return {dprGeneral: dprGeneral2[0][0], dpr_table_details: dpr_table_details[0]}
     } catch(ex) {
         console.log(ex)
     }
