@@ -70,7 +70,7 @@ const getDPRDetails = async (req, res) => {
     const { id } = req.params;
     console.log(id)
     try {
-        const {dprGeneral: generalDetails, dpr_table_details} = await getDPRDetailsHelper(id);
+        const {dprGeneral: generalDetails= {}, dpr_table_details} = await getDPRDetailsHelper(id);
         res.json({generalDetails, dpr_table_details})
     } catch(ex) {
         console.log(ex)
