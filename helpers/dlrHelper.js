@@ -13,7 +13,7 @@ const getbycontractorDetailsHelper = async (id) => {
         labour_contractor as lbc on lba.contractor_id=lbc.id 
         where lba.id = ?`, [id]);
 
-        console.log(dprGeneral[0][0])
+        //console.log(dprGeneral[0][0])
         const generalDetails = dprGeneral[0][0];
         
         const dlr_table_details = await con.execute(`SELECT labour.name, labour.contact_no, IF(lad.attend=1, "PRESENT", "ABSENT") AS attend, lad.date_of_attendance, mc.category_name
@@ -24,7 +24,7 @@ const getbycontractorDetailsHelper = async (id) => {
         master_category as mc ON labour.categories = mc.id
         WHERE lad.labour_attendance_id = ?`, [id]);
 
-        console.log(dlr_table_details[0])
+       // console.log(dlr_table_details[0])
 
 
         const dlr_table_attendance_details = await con.execute(`SELECT COUNT(lad.attend) AS total, lad.attend 
@@ -36,14 +36,14 @@ const getbycontractorDetailsHelper = async (id) => {
         WHERE lad.labour_attendance_id = ?
         GROUP BY lad.attend`, [id]);
 
-        console.log(dlr_table_attendance_details[0])
+       // console.log(dlr_table_attendance_details[0])
 
         const attendance_details = dlr_table_attendance_details[0].reduce((acc, el) => {
-            acc = el["attend"] === 1 ? acc["present"] ? { ...acc, present: acc.present + 1 } : { ...acc, present: 1 } : acc["absent"] ? { ...acc, absent: acc.absent + 1 } : { ...acc, absent: 1 }
+            acc = el["attend"] === 1 ? acc["present"] ? { ...acc, present: acc.present + el["total"] } : { ...acc, present: el["total"] } : acc["absent"] ? { ...acc, absent: acc.absent + el["total"] } : { ...acc, absent: el["total"] }
             return acc;
         }, {});
 
-        console.log(attendance_details);
+      //  console.log(attendance_details);
 
         const category_count = await con.execute(`SELECT COUNT(mc.id) as total, mc.category_name
         FROM labour_attendance_details AS lad
