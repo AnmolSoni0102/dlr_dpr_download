@@ -7,10 +7,10 @@ const {getProductivityData, getFormattedDataHelper} = require('../helpers/produc
 
 const getProductivityByCategory = async (req, res) => {
     console.log(req.body)
-    const { type, category_id= "", filterBy = "daily", bookingId, date } = req.body;
+    const { type, category_id= "", filterBy = "daily", bookingId, date, month } = req.body;
     
     try {
-        const {productivityDlrData, productivityDprData} = await getProductivityData(type, bookingId, category_id);
+        const {productivityDlrData, productivityDprData} = await getProductivityData(type, bookingId, category_id, month);
         const formatData = await getFormattedDataHelper({productivityDlrData, productivityDprData}, filterBy, date);
         res.json(formatData);
     } catch (ex) {
