@@ -12,7 +12,7 @@ const getProductivityByCategory = async (req, res) => {
     try {
         const {productivityDlrData, productivityDprData} = await getProductivityData(type, bookingId, category_id);
         const formatData = await getFormattedDataHelper({productivityDlrData, productivityDprData}, filterBy, date);
-        res.json({formatData});
+        res.json(formatData);
     } catch (ex) {
         console.log(ex)
     }

@@ -135,7 +135,7 @@ const getFormattedDataHelper = async (dbData, filterBy, date) => {
         } else if (filterBy == "weekly" || filterBy == "monthly") {
             data = await filterByWeekorMonth(dbData, filterBy);
         }
-        return { data }
+        return  data ;
     } catch (ex) {
         console.log(ex)
     }
