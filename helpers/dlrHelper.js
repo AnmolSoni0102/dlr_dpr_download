@@ -2,7 +2,7 @@ const db = require('../db/db');
 
 const getbycontractorDetailsHelper = async (id) => {
     console.log(id)
-    const con = db.getConnection();
+    const con = await db.getConnection();
     try {
         const dprGeneral = await con.execute(`select ccr.booking_id, lbc.name as contractor_name, 
         CONCAT(lbc.prefix_u_id, '-', lbc.id) AS contactor_id
@@ -64,7 +64,7 @@ const getbycontractorDetailsHelper = async (id) => {
 
 const getbyCustomerDetailsHelper = async (id) => {
     console.log(id)
-    const con = db.getConnection();
+    const con = await db.getConnection();
     try {
         const dprGeneral = await con.execute(`select ccr.booking_id, lbc.name as contractor_name, 
         CONCAT(lbc.prefix_u_id, '-', lbc.id) AS contactor_id, lba.service_contract_number

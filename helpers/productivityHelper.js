@@ -7,7 +7,7 @@ const {
 } = require("../util/util");
 
 const getProductivityData = async (type, bookingId, category_id, month) => {
-    const con = db.getConnection();
+    const con = await db.getConnection();
     try {
         let productivityDlrData = null,
             productivityDprData = null;

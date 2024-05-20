@@ -20,8 +20,11 @@ const createConnection = {
             console.log("SQL connection couldn't be established!! ", ex);
         }
     },
-    getConnection: () => {
+    getConnection: async () => {
         //console.log('got connection ', this.connection)
+        if(!this.connection) {
+            await this.connect();
+        }
         return this.connection;
     },
     createSMPTMailTransporter: async() => {
