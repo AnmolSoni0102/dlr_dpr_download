@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 require('dotenv').config()
 const cors = require('cors');
+const cron = require('node-cron');
 
 
 var indexRouter = require('./routes/index');
@@ -32,6 +33,10 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 db.connect();
+cron.schedule('0 */2 * * *', () => {
+  console.log('Running cron job');
+  db.connect();
+});
 db.createSMPTMailTransporter();
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
