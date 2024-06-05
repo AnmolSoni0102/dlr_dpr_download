@@ -114,7 +114,7 @@ const filterByDate = async (dbData, date) => {
   };
 
   return {
-    data: [{ dlr: {...dlr, dlr: dlr.totalDlr}, dpr }],
+    data: [{ dlr: {...dlr, dlr: totalDlr.dlr}, dpr }],
     total: {
       totalDlr: { ...totalDlr },
       totalDpr: { ...totalDpr },
