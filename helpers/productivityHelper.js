@@ -106,7 +106,26 @@ const filterByDate = async (dbData, date) => {
       return true;
     }
   });
-  return { data: [{ dlr, dpr }], status: "success" };
+
+  const totalDlr = { dlr: dlr?.total_price ?? 0 };
+  const totalDpr = {
+    expected_outcome: dpr?.expected_outcome ?? 0,
+    actual_outcome: dpr?.actual_outcome ?? 0,
+  };
+
+  return {
+    data: [{ dlr, dpr }],
+    total: {
+      totalDlr: { ...totalDlr },
+      totalDpr: { ...totalDpr },
+      averageDlr: { dlr: totalDlr.dlr / 1 },
+      averageDpr: {
+        expected_outcome: totalDpr.expected_outcome / 1,
+        actual_outcome: totalDpr.actual_outcome / 1,
+      },
+    },
+    status: "success",
+  };
 };
 
 const filterByWeekorMonth = async (dbData, filterBy) => {
