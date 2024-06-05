@@ -106,7 +106,7 @@ const filterByDate = async (dbData, date) => {
       return true;
     }
   });
-  return { data: { dlr, dpr }, status: "success" };
+  return { data: [{ dlr, dpr }], status: "success" };
 };
 
 const filterByWeekorMonth = async (dbData, filterBy) => {
