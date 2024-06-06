@@ -13,7 +13,7 @@ const getProductivityData = async (type, bookingId, category_id, month) => {
       productivityDprData = null;
     if (type == "byCategory") {
       productivityDlrData = await con.execute(
-        `select DATE(laa.created_at) as dt, SUM(laa.no_of_labour) * ccap.price as total_price 
+        `select DATE(la.date_of_attendance) as dt, SUM(laa.no_of_labour) * ccap.price as total_price 
             FROM crm_customer_agreement_price ccap
             INNER JOIN crm_company_request ccr ON ccap.service_contract_number=ccr.service_contract
             INNER JOIN crm_company_request_details ccrd ON ccrd.company_request_id=ccr.id
@@ -23,8 +23,8 @@ const getProductivityData = async (type, bookingId, category_id, month) => {
             where ccr.id=? 
             AND laa.category_id=?
             AND la.customer_approval_status=2
-            AND MONTH(laa.created_at) = ?
-            GROUP BY DATE(laa.created_at), laa.category_id
+            AND MONTH(la.date_of_attendance) = ?
+            GROUP BY DATE(la.date_of_attendance), laa.category_id
             ORDER BY dt ASC`,
         [bookingId, category_id, month]
       );
@@ -45,7 +45,7 @@ const getProductivityData = async (type, bookingId, category_id, month) => {
       );
     } else if (type == "consolidated") {
       productivityDlrData = await con.execute(
-        `select dat.dt, SUM(dat.total_price) as total_price from (select DATE(laa.created_at) as dt, laa.category_id, SUM(laa.no_of_labour), SUM(laa.no_of_labour) * ccap.price as total_price 
+        `select dat.dt, SUM(dat.total_price) as total_price from (select DATE(la.date_of_attendance) as dt, laa.category_id, SUM(laa.no_of_labour), SUM(laa.no_of_labour) * ccap.price as total_price 
             FROM crm_customer_agreement_price ccap
             INNER JOIN crm_company_request ccr ON ccap.service_contract_number=ccr.service_contract
             INNER JOIN crm_company_request_details ccrd ON ccrd.company_request_id=ccr.id
@@ -53,9 +53,9 @@ const getProductivityData = async (type, bookingId, category_id, month) => {
             INNER JOIN labour_attendance la ON ccr.id=la.order_id
             INNER JOIN labour_attendance_approval laa ON laa.attendance_id=la.id AND ccrd.category_id=laa.category_id
             where ccr.id=? 
-            #AND la.customer_approval_status=2
-            AND MONTH(laa.created_at) = ?
-            GROUP BY DATE(laa.created_at) 
+            AND la.customer_approval_status=2
+            AND MONTH(la.date_of_attendance) = ?
+            GROUP BY DATE(la.date_of_attendance) 
             ,laa.category_id) as dat 
             GROUP BY dat.dt ORDER BY dat.dt ASC`,
         [bookingId, month]
