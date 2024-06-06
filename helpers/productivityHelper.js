@@ -114,7 +114,7 @@ const filterByDate = async (dbData, date) => {
   };
 
   return {
-    data: [{ dlr: {...dlr, dlr: totalDlr.dlr}, dpr }],
+    data: [{ dlr: { ...dlr, dlr: totalDlr.dlr }, dpr }],
     total: {
       totalDlr: { ...totalDlr },
       totalDpr: { ...totalDpr },
@@ -149,13 +149,14 @@ const filterByWeekorMonth = async (dbData, filterBy) => {
     console.log(`dlr `, dlrData, weekhash2);
     if (weekhash === "") {
       weekhash == weekhash2;
-      count = 1;
+     // count = 1;
     } else if (weekhash !== weekhash2) {
       weekhash = weekhash2;
       data.push({ dlr, dpr });
       (dlr = {}), (dpr = {});
-      count++;
+     // count++;
     }
+    count++;
     //console.log(`dlr `, dlr, (dlr.dlr ? dlr.dlr : 0) + dlr.total_price)
     dlr = { dlr: (dlr.dlr ? dlr.dlr : 0) + dlrData.total_price };
     totalDlr = { dlr: dlr.dlr };
