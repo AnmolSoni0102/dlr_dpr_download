@@ -1,9 +1,7 @@
 //const User = require("../models/User");
 const excelJS = require("exceljs");
 //const db = require('../db/db');
-const {getProductivityData, getFormattedDataHelper} = require('../helpers/productivityHelper')
-
-
+const {getProductivityData, getFormattedDataHelper, getCategoriesForBookingID} = require('../helpers/productivityHelper')
 
 const getProductivityByCategory = async (req, res) => {
     console.log(req.body)
@@ -18,4 +16,19 @@ const getProductivityByCategory = async (req, res) => {
     }
 };
 
-module.exports = {getProductivityByCategory};
+const getCategories = async (req, res) => {
+    console.log(req.params)
+
+    const {bookingId} = req.params;
+    if(!bookingId) {
+        res.json({data: "bookingID is invalid"});
+    }
+    try {
+        const data = await getCategoriesForBookingID(bookingId);
+        res.json(data);
+    } catch (ex) {
+        console.log(ex)
+    }
+};
+
+module.exports = {getProductivityByCategory, getCategories};

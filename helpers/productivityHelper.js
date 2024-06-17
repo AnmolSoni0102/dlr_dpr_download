@@ -149,12 +149,12 @@ const filterByWeekorMonth = async (dbData, filterBy) => {
     console.log(`dlr `, dlrData, weekhash2);
     if (weekhash === "") {
       weekhash == weekhash2;
-     // count = 1;
+      // count = 1;
     } else if (weekhash !== weekhash2) {
       weekhash = weekhash2;
       data.push({ dlr, dpr });
       (dlr = {}), (dpr = {});
-     // count++;
+      // count++;
     }
     count++;
     //console.log(`dlr `, dlr, (dlr.dlr ? dlr.dlr : 0) + dlr.total_price)
@@ -218,4 +218,27 @@ const getFormattedDataHelper = async (dbData, filterBy, date) => {
   }
 };
 
-module.exports = { getProductivityData, getFormattedDataHelper };
+const getCategoriesForBookingID = async (bookingId) => {
+  const con = await db.getConnection();
+
+  const productivityDlrData = await con.execute(
+    `select DISTINCT(ccrd.category_id), mc.category_name
+    FROM crm_customer_agreement_price ccap
+    INNER JOIN crm_company_request ccr ON ccap.service_contract_number=ccr.service_contract
+    INNER JOIN crm_company_request_details ccrd ON ccrd.company_request_id=ccr.id
+    AND ccrd.category_id=ccap.category_id
+    INNER JOIN labour_attendance la ON ccr.id=la.order_id
+    INNER JOIN labour_attendance_approval laa ON laa.attendance_id=la.id AND ccrd.category_id=laa.category_id
+    INNER JOIN master_category mc ON mc.id = ccrd.category_id
+    where ccr.id=?`,
+    [bookingId]
+  );
+
+  return {data: productivityDlrData[0]}
+};
+
+module.exports = {
+  getProductivityData,
+  getFormattedDataHelper,
+  getCategoriesForBookingID,
+};
