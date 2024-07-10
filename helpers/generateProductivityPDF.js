@@ -45,6 +45,9 @@ async function createPdfWithBarChart(formatData, filterBy) {
       scales: {
         y: {
           beginAtZero: true,
+          ticks: {
+            stepSize: 500 // Set the step size to 500
+          }
         },
       },
     },
