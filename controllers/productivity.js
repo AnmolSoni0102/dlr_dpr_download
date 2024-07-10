@@ -25,7 +25,7 @@ const downloadPDF = async (req, res) => {
     try {
         const {productivityDlrData, productivityDprData} = await getProductivityData(type, bookingId, category_id, month);
         const formatData = await getFormattedDataHelper({productivityDlrData, productivityDprData}, filterBy, date);
-        await createPdfWithBarChart(formatData, filterBy);
+        await createPdfWithBarChart(formatData, filterBy, bookingId);
         const filePath = path.join(__dirname, '../bar-chart.pdf');
         res.download(filePath);
     } catch (ex) {

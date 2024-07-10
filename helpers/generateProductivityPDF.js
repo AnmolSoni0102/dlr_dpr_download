@@ -4,7 +4,7 @@ const { ChartJSNodeCanvas } = require("chartjs-node-canvas");
 const fs = require("fs");
 const path = require("path");
 
-async function createPdfWithBarChart(formatData, filterBy) {
+async function createPdfWithBarChart(formatData, filterBy, bookingID) {
   // Set up the chart rendering context
   const width = 595;
   const height = 842;
@@ -13,6 +13,7 @@ async function createPdfWithBarChart(formatData, filterBy) {
   const chartJSNodeCanvas = new ChartJSNodeCanvas({
     width: chartWidth,
     height: chartHeight,
+    pixelRatio: 5
   });
 
   console.log(`formatData `, formatData);
@@ -46,8 +47,8 @@ async function createPdfWithBarChart(formatData, filterBy) {
         y: {
           beginAtZero: true,
           ticks: {
-            stepSize: 500 // Set the step size to 500
-          }
+            stepSize: 500, // Set the step size to 500
+          },
         },
       },
     },
@@ -76,11 +77,27 @@ async function createPdfWithBarChart(formatData, filterBy) {
     height: logoDims.height,
   });
 
+  // Draw the booking ID and Daily Data text below the logo
+  const topText = 10;
+  const topTextY = page.getHeight() - logoDims.height - 30; // Adjust the Y position as needed
+
+  page.drawText(`BookingID: ${bookingID}`, {
+    x: topText,
+    y: topTextY,
+    size: 12,
+  });
+
+  page.drawText(filterBy == "daily" ? `Daily Data` : "Weekly Data", {
+    x: topText,
+    y: topTextY - 15,
+    size: 12,
+  });
+
   // Embed the chart image in the PDF
   const chartImage = await pdfDoc.embedPng(chartBuffer);
   // Calculate the center position for the chart
   const chartX = (page.getWidth() - chartWidth) / 2;
-  const chartY = page.getHeight() - logoDims.height - 20 - chartHeight;
+  const chartY = topTextY - 40 - chartHeight; 
 
   // Draw the chart image on the PDF page
   page.drawImage(chartImage, {
