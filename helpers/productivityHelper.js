@@ -148,7 +148,7 @@ const filterByWeekorMonth = async (dbData, filterBy) => {
         : monthOfYear(new Date(moment(dlr.dt).format("YYYY-MM-DD")));
     console.log(`dlr `, dlrData, weekhash2);
     if (weekhash === "") {
-      weekhash == weekhash2;
+      weekhash = weekhash2;
       // count = 1;
     } else if (weekhash !== weekhash2) {
       weekhash = weekhash2;
@@ -234,7 +234,7 @@ const getCategoriesForBookingID = async (bookingId) => {
     [bookingId]
   );
 
-  return {data: productivityDlrData[0]}
+  return { data: productivityDlrData[0] };
 };
 
 module.exports = {

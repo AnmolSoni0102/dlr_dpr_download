@@ -2,6 +2,8 @@
 const excelJS = require("exceljs");
 //const db = require('../db/db');
 const {getProductivityData, getFormattedDataHelper, getCategoriesForBookingID} = require('../helpers/productivityHelper')
+const createPdfWithBarChart  = require("../helpers/generateProductivityPDF");
+const path = require('path');
 
 const getProductivityByCategory = async (req, res) => {
     console.log(req.body)
@@ -11,6 +13,21 @@ const getProductivityByCategory = async (req, res) => {
         const {productivityDlrData, productivityDprData} = await getProductivityData(type, bookingId, category_id, month);
         const formatData = await getFormattedDataHelper({productivityDlrData, productivityDprData}, filterBy, date);
         res.json(formatData);
+    } catch (ex) {
+        console.log(ex)
+    }
+};
+
+const downloadPDF = async (req, res) => {
+    console.log(req.body)
+    const { type, category_id= "", filterBy = "daily", bookingId, date, month } = req.body;
+    
+    try {
+        const {productivityDlrData, productivityDprData} = await getProductivityData(type, bookingId, category_id, month);
+        const formatData = await getFormattedDataHelper({productivityDlrData, productivityDprData}, filterBy, date);
+        await createPdfWithBarChart(formatData, filterBy);
+        const filePath = path.join(__dirname, '../bar-chart.pdf');
+        res.download(filePath);
     } catch (ex) {
         console.log(ex)
     }
@@ -31,4 +48,4 @@ const getCategories = async (req, res) => {
     }
 };
 
-module.exports = {getProductivityByCategory, getCategories};
+module.exports = {getProductivityByCategory, getCategories, downloadPDF};

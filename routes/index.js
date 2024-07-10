@@ -3,7 +3,7 @@ var router = express.Router();
 var {downloadDPR, getDPRDetails}  = require('../controllers/dpr');
 var {exportDLRByContractor, getDLRByContractorDetails, exportDLRByCustomer, getDLRByCustomerDetails} = require('../controllers/dlr');
 var sendEmail = require('../controllers/sendEmail');
-var {getProductivityByCategory, getCategories} = require('../controllers/productivity')
+var {getProductivityByCategory, getCategories, downloadPDF} = require('../controllers/productivity')
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -23,5 +23,8 @@ router.get("/dlr/bycustomerdetails/:id", getDLRByCustomerDetails);
 
 router.post("/getProductivity", getProductivityByCategory)
 router.get("/getCategories/:bookingId", getCategories);
+
+router.post("/productivity/downloadPDF", downloadPDF)
+
 
 module.exports = router;
