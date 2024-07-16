@@ -1,6 +1,6 @@
 //const User = require("../models/User");
 const excelJS = require("exceljs");
-const fs = require('fs');
+const fs = require("fs");
 //const db = require('../db/db');
 const {
   getProductivityData,
@@ -54,22 +54,9 @@ const downloadPDF = async (req, res) => {
       filterBy,
       date
     );
-    await createPdfWithBarChart(formatData, filterBy, bookingId);
-    const filePath = path.join(__dirname, "../bar-chart.pdf");
-    res.setHeader("Content-Disposition", 'attachment; filename="example.pdf"');
-    res.setHeader('Content-Type', 'application/pdf');
-
-    const fileStream = fs.createReadStream(filePath);
-    fileStream.pipe(res);
-
-    fileStream.on('end', () => {
-      res.end();
-    });
-
-    fileStream.on('error', (error) => {
-      console.log(error);
-      res.status(500).send('An error occurred while processing your request.');
-    });
+    const fileName = await createPdfWithBarChart(formatData, filterBy, bookingId);
+    console.log(`filePath `, fileName);
+    res.json({filepath: `/public/pdf/${fileName}`})
   } catch (ex) {
     console.log(ex);
   }

@@ -3,6 +3,10 @@ const { createCanvas, loadImage } = require("canvas");
 const { ChartJSNodeCanvas } = require("chartjs-node-canvas");
 const fs = require("fs");
 const path = require("path");
+const crypto = require('crypto');
+function generateRandomFileName() {
+  return crypto.randomBytes(16).toString('hex') + '.pdf';
+}
 
 async function createPdfWithBarChart(formatData, filterBy, bookingID) {
   // Set up the chart rendering context
@@ -151,7 +155,14 @@ async function createPdfWithBarChart(formatData, filterBy, bookingID) {
 
   // Save the PDF to a file
   const pdfBytes = await pdfDoc.save();
-  fs.writeFileSync("bar-chart.pdf", pdfBytes);
+  const fileName = generateRandomFileName();
+  const dirPath = path.join(__dirname, '../public/pdf');
+  const filePath = path.join(dirPath, fileName);
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
+  }
+  fs.writeFileSync(filePath, pdfBytes);
+  return fileName;
 }
 
 module.exports = createPdfWithBarChart;
