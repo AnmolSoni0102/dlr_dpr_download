@@ -19,12 +19,13 @@ const getProductivityByCategory = async (req, res) => {
     bookingId,
     date,
     month,
-    persona = ""
+    persona = "",
+    contractorId = ""
   } = req.body;
 
   try {
     const { productivityDlrData, productivityDprData } =
-      await getProductivityData(type, bookingId, category_id, month, persona);
+      await getProductivityData(type, bookingId, category_id, month, {persona, contractorId});
     const formatData = await getFormattedDataHelper(
       { productivityDlrData, productivityDprData },
       filterBy,
@@ -45,11 +46,12 @@ const downloadPDF = async (req, res) => {
     bookingId,
     date,
     month,
+    persona, contractorId
   } = req.body;
 
   try {
     const { productivityDlrData, productivityDprData } =
-      await getProductivityData(type, bookingId, category_id, month, persona);
+      await getProductivityData(type, bookingId, category_id, month, {persona, contractorId});
     const formatData = await getFormattedDataHelper(
       { productivityDlrData, productivityDprData },
       filterBy,
