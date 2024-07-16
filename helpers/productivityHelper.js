@@ -6,7 +6,13 @@ const {
   monthOfYear,
 } = require("../util/util");
 
-const getProductivityData = async (type, bookingId, category_id, month) => {
+const getProductivityData = async (
+  type,
+  bookingId,
+  category_id,
+  month,
+  persona = "contractor"
+) => {
   const con = await db.getConnection();
   try {
     let productivityDlrData = null,
@@ -55,10 +61,13 @@ const getProductivityData = async (type, bookingId, category_id, month) => {
             where ccr.id=? 
             AND la.customer_approval_status=2
             AND MONTH(la.date_of_attendance) = ?
+             ${persona == "contractor" ? "AND la.contractor_id=?" : ""}
             GROUP BY DATE(la.date_of_attendance) 
             ,laa.category_id) as dat 
             GROUP BY dat.dt ORDER BY dat.dt ASC`,
-        [bookingId, month]
+        persona == "contractor"
+          ? [bookingId, month, contractorId]
+          : [bookingId, month]
       );
 
       productivityDprData = await con.execute(
@@ -72,9 +81,12 @@ const getProductivityData = async (type, bookingId, category_id, month) => {
             WHERE ccr.id=?
             AND dp.pm_status=2
             AND MONTH(dd.created_at) = ?
+            ${persona == "contractor" ? "AND dp.contractor_id=?" : ""}
             GROUP BY DATE(dd.created_at), SUBSTRING(dd.dpr_item, 1, 5)) as dat
             GROUP BY dat.dt ORDER BY dat.dt ASC`,
-        [bookingId, month]
+        persona == "contractor"
+          ? [bookingId, month, contractorId]
+          : [bookingId, month]
       );
     }
 
