@@ -20,12 +20,15 @@ const getProductivityByCategory = async (req, res) => {
     date,
     month,
     persona = "",
-    contractorId = ""
+    contractorId = "",
   } = req.body;
 
   try {
     const { productivityDlrData, productivityDprData } =
-      await getProductivityData(type, bookingId, category_id, month, {persona, contractorId});
+      await getProductivityData(type, bookingId, category_id, month, {
+        persona,
+        contractorId,
+      });
     const formatData = await getFormattedDataHelper(
       { productivityDlrData, productivityDprData },
       filterBy,
@@ -46,20 +49,28 @@ const downloadPDF = async (req, res) => {
     bookingId,
     date,
     month,
-    persona, contractorId
+    persona = "",
+    contractorId = "",
   } = req.body;
 
   try {
     const { productivityDlrData, productivityDprData } =
-      await getProductivityData(type, bookingId, category_id, month, {persona, contractorId});
+      await getProductivityData(type, bookingId, category_id, month, {
+        persona,
+        contractorId,
+      });
     const formatData = await getFormattedDataHelper(
       { productivityDlrData, productivityDprData },
       filterBy,
       date
     );
-    const fileName = await createPdfWithBarChart(formatData, filterBy, bookingId);
+    const fileName = await createPdfWithBarChart(
+      formatData,
+      filterBy,
+      bookingId
+    );
     console.log(`filePath `, fileName);
-    res.json({filepath: `/public/pdf/${fileName}`})
+    res.json({ filepath: `/public/pdf/${fileName}` });
   } catch (ex) {
     console.log(ex);
   }
