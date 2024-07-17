@@ -11,7 +11,7 @@ const getProductivityData = async (
   bookingId,
   category_id,
   month,
-  {persona = "contractor", contractorId}
+  {persona, contractorId}
 ) => {
   const con = await db.getConnection();
   try {
